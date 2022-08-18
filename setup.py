@@ -31,6 +31,7 @@ else:
 
 class OptionalBuildExt(build_ext):
     """Allow the building of C extensions to fail."""
+
     def run(self):
         try:
             if os.environ.get('SETUPPY_FORCE_PURE'):
@@ -42,12 +43,14 @@ class OptionalBuildExt(build_ext):
 
     def _unavailable(self, e):
         print('*' * 80)
-        print('''WARNING:
+        print(
+            '''WARNING:
 
     An optional code optimization (C extension) could not be compiled.
 
     Optimizations for this package will not be available!
-        ''')
+        '''
+        )
 
         print('CAUSE:')
         print('')
@@ -57,6 +60,7 @@ class OptionalBuildExt(build_ext):
 
 class BinaryDistribution(Distribution):
     """Distribution which almost always forces a binary package with platform name"""
+
     def has_ext_modules(self):
         return super().has_ext_modules() or not os.environ.get('SETUPPY_ALLOW_PURE')
 
@@ -118,6 +122,7 @@ setup(
     python_requires='>=3.6',
     install_requires=[
         'click',
+        'cppyy',
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
     ],
     extras_require={
@@ -137,7 +142,7 @@ setup(
             sources=[path],
             extra_compile_args=CFLAGS.split(),
             extra_link_args=LFLAGS.split(),
-            include_dirs=[dirname(path)]
+            include_dirs=[dirname(path)],
         )
         for root, _, _ in os.walk('src')
         for path in glob(join(root, '*.c'))
