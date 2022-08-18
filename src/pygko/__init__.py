@@ -1,8 +1,14 @@
 import cppyy
 import os
+import sys
 from pathlib import Path
 
-gko_path = Path(os.environ("GKO_ROOT"))
+gko_path = Path(os.environ.get("GKO_ROOT"))
+if not gko_path:
+    print("[PyGKO] GKO_ROOT enviroment variable not set")
+    sys.exit(-1)
+
+
 gko_incl_path = gko_path / "include"
 cppyy.add_include_path(gko_incl_path)
 # TODO find gko version
